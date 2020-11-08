@@ -76,12 +76,24 @@ print(all_folders)
 #%%
 # python finds the latest pkl
 all_pickles = glob.glob(os.path.join(path+"\\total_df_20*.pkl"))
-# print(all_pickles)
 
-total_df = max(all_pickles, key=os.path.getctime)
+print(all_pickles)
+
+if len(all_pickles) == 0:
+
+    print("No total_df yet")
+
+    total_df = pd.DataFrame()
+
+else: 
+
+    total_df = max(all_pickles, key=os.path.getctime)
+
+    total_df = pd.read_pickle(total_df) 
+
+    
 print ("Latest total_df is:", total_df)
 
-total_df = pd.read_pickle(total_df) 
 print("Shape of the latest total_df:", total_df.shape)
 
 
@@ -107,17 +119,20 @@ for folder in all_folders:
 
 # Rename the indexs of total_df
 total_df.index = [f'draw_{i}' for i in range(total_df.shape[0])]
-print("shape of total_df:", total_df.shape)
 
+print("shape of total_df:", total_df.shape)
 
 #%%
 # Rename total_df_new according to time YYMMDD
 Date = datetime.now().strftime("%Y%m%d") # use ("%Y%m%d-%H%M%S") for hour-minute-second
+
 print(Date)
 
 total_df.to_pickle("N:\\agpo\\work2\\MindStep\\SurrogateNN\\Data\\total_df_"+Date+".pkl")
+
 print("new total_df saved")
 
 total_df_new = pd.read_pickle("N:\\agpo\\work2\\MindStep\\SurrogateNN\\Data\\total_df_"+Date+".pkl")
+
 print(total_df_new)
 # %%
