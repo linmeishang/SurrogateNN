@@ -8,6 +8,9 @@ import numpy as np
 import glob
 import os
 import time
+from datetime import datetime
+#%%
+
 # new hallo hugo
 #%%
 # mapperInstance is a function to rename columns so that we can select them
@@ -62,15 +65,27 @@ def get_df_pickle(folder):
     df.to_pickle("N:\\agpo\\work2\\MindStep\\SurrogateNN\\Data\\"+folder[len(folder)-9:len(folder)-1]+".pkl")
    
     # print('file saved')
+    return df
 # %%
 # Get all folders in Data
 path = r'N:\agpo\work2\MindStep\SurrogateNN\Data'
 
 all_folders = glob.glob(os.path.join(path + '/*/'))
-
 print(all_folders)
 
+#%%
+# python finds the latest pkl
+all_pickles = glob.glob(os.path.join(path+"\\total_df_20*.pkl"))
+# print(all_pickles)
 
+total_df = max(all_pickles, key=os.path.getctime)
+print ("Latest total_df is:", total_df)
+
+total_df = pd.read_pickle(total_df) 
+print("Shape of the latest total_df:", total_df.shape)
+
+
+#%%
 for folder in all_folders:
 
     filename = folder[len(folder)-9:len(folder)-1]
@@ -83,29 +98,26 @@ for folder in all_folders:
     else:
         print(filename, "File not exist")
 
-        get_df_pickle(folder)
+        df = get_df_pickle(folder)
+        # print("df:", df)
+        # append it into total_df
+        total_df = total_df.append(df)
 
         print(filename, "File is created")
 
+# Rename the indexs of total_df
+total_df.index = [f'draw_{i}' for i in range(total_df.shape[0])]
+print("shape of total_df:", total_df.shape)
 
 
 #%%
+# Rename total_df_new according to time YYMMDD
+Date = datetime.now().strftime("%Y%m%d") # use ("%Y%m%d-%H%M%S") for hour-minute-second
+print(Date)
 
-# Concate all pickels together as total.pkl
-#####
-# tomorrow
-##### 
+total_df.to_pickle("N:\\agpo\\work2\\MindStep\\SurrogateNN\\Data\\total_df_"+Date+".pkl")
+print("new total_df saved")
 
-
-
-
-
-
-
-
-# concate the new pikles with the existing total.pkl
-#####
-# tomorrow
-##### 
-
+total_df_new = pd.read_pickle("N:\\agpo\\work2\\MindStep\\SurrogateNN\\Data\\total_df_"+Date+".pkl")
+print(total_df_new)
 # %%
