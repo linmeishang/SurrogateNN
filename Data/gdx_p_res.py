@@ -1,4 +1,6 @@
-# open gdx file in python
+# open gdx file in python and automatically add read folders and add it to exitsing dataframe 
+# must type in the command "conda activate py36"
+
 #%%
 import pandas as pd
 import gdxpds
