@@ -10,17 +10,17 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler
 from sklearn.model_selection import train_test_split
 from datetime import datetime
 #%%
-# load pkl 
+# load parquet
 path = r'N:\agpo\work2\MindStep\SurrogateNN\TrainData'
 
-all_pickles = glob.glob(os.path.join(path+"\\total_df_20*.pkl"))
+all_parquets = glob.glob(os.path.join(path+"\\total_df_20*.parquet.gzip"))
 
 # find the latest df
-df = max(all_pickles, key=os.path.getctime)
+df = max(all_parquets, key=os.path.getctime)
 print(df)
 
-# load df from pickle
-df = pd.read_pickle(df)
+# load df from parquet
+df = pd.read_parquet(df)
 print(df)
 
 # Delete all columns that have "mean"
@@ -70,7 +70,7 @@ print("shape of X_test_raw:", X_test_raw.shape)
 print("shape of Y_test_raw:", Y_test_raw.shape)
 
 
-# Creat a new folder with DATE under TrainData and save all pickles there
+# Creat a new folder with DATE under TrainData and save all parquets there
 
 # define the name of dir to be created 
 path = r"N:\agpo\work2\MindStep\SurrogateNN\TrainData\TrainData"+ datetime.now().strftime("_%Y%m%d")
