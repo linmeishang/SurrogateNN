@@ -100,7 +100,13 @@ X_test  = X_scaler.transform(X_test_raw)
 Y_train = Y_scaler.fit_transform(Y_train_raw)
 Y_test  = Y_scaler.transform(Y_test_raw)
 
+# After transformation, names of columns are lost. Now we put them back
+X_train = pd.DataFrame(X_train, columns = X_train_raw.columns)
+Y_train = pd.DataFrame(Y_train, columns = Y_train_raw.columns)
+X_test = pd.DataFrame(X_test, columns = X_test_raw.columns)
+Y_test = pd.DataFrame(Y_test, columns = Y_test_raw.columns)
 
+#%%
 # Pickle scaler X_scaler Y_scaler
 X_scaler_file = 'X_scaler.sav'
 pickle.dump(X_scaler_file, open(X_scaler_file, 'wb'))
@@ -112,25 +118,25 @@ pickle.dump(Y_scaler_file, open(Y_scaler_file, 'wb'))
 # test_scaled_set = scaler.transform(test_set)
 
 
-# Save both raw data and normalized data 
-# raw data
-with open('X_train_raw.pickle','wb') as output:
-    pickle.dump(X_train_raw, output)
-with open('X_test_raw.pickle','wb') as output:
-    pickle.dump(X_test_raw, output)
-with open('Y_train_raw.pickle','wb') as output:
-    pickle.dump(Y_train_raw, output)
-with open('Y_test_raw.pickle','wb') as output:
-    pickle.dump(Y_test_raw, output)
+#%%
+my_list = [X_train_raw, Y_train_raw, X_test_raw, Y_test_raw, X_train, Y_train, X_test, Y_test]
 
-# normalized data
-with open('X_train.pickle','wb') as output:
-    pickle.dump(X_train, output)
-with open('X_test.pickle','wb') as output:
-    pickle.dump(X_test, output)
-with open('Y_train.pickle','wb') as output:
-    pickle.dump(Y_train, output)
-with open('Y_test.pickle','wb') as output:
-    pickle.dump(Y_test, output)
+filenames = ['X_train_raw', 'Y_train_raw', 'X_test_raw', 'Y_test_raw', 'X_train', 'Y_train', 'X_test', 'Y_test']
+
+# parallel iteration of two list
+#
+for df, j in zip(my_list, range(8)):
+
+    filename = filenames[j]
+
+    #  save all data as parquet files
+    df.to_parquet(filename+'.parquet.gzip', compression='gzip')
+
+
+#%%
+# read parquet
+# Y_test_raw = pd.read_parquet('Y_test_raw.parquet.gzip') 
+
+
 
 
