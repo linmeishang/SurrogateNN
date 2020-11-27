@@ -9,9 +9,10 @@ import glob
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler
 from sklearn.model_selection import train_test_split
 from datetime import datetime
+from pickle import dump
 #%%
 # load parquet
-path = r'N:\agpo\work2\MindStep\SurrogateNN\TrainData'
+path = r'N:\agpo\work2\MindStep\SurrogateNN\Data'
 
 all_parquets = glob.glob(os.path.join(path+"\\total_df_20*.parquet.gzip"))
 
@@ -21,37 +22,39 @@ print(df)
 
 # load df from parquet
 df = pd.read_parquet(df)
-print(df)
-
-# Delete all columns that have "mean"
-df = df[df.columns.drop(list(df.filter(regex='mean')))]
 
 print("shape of df:", df.shape)
 print("df:", df) 
 
 #%%
-# Define X_all and Y_all
 
-in_col = [ 
-     # Group 1: Crops hours
-     'Crops_hours__2020', # what is this feature
-     'Crops_hours_FEB_2020', #
-     'Crops_hours_MAR_2020', #  
-     'Crops_hours_APR_2020' # 
-     # Group 2:  work earn  
-       
-]
-        
-       
-out_col = [
-     'Crops_hours_JUN_2020', # 
-     'Crops_hours_JUL_2020', # 
-     'Crops_hours_AUG_2020' #
-]
+path = r'N:\agpo\work2\MindStep\SurrogateNN\TrainData'
+
+os.chdir(path)
+
+print("Current Working Directory " , os.getcwd())
+
+#%%
+#Load Input and outout table
+InputOutputArable = pd.read_excel('InputOutputArable.xlsx', index_col=0)  
+#%%
+print(InputOutputArable)
+#%%
+# Assign these whose Input = 1 to in_col
+Input = InputOutputArable.query('Input==1')
+Output = InputOutputArable.query('Output==1')
+# Get name of indexs
+#%%
+in_col = Input.index.values.tolist() 
+out_col = Output.index.values.tolist()
+
+print("Input features: ", in_col)
+print("Output targets: ", out_col)
 
 
-X_all = df.loc[:,in_col]
-Y_all = df.loc[:,out_col]
+#%%
+X_all = df.reindex(columns = in_col)
+Y_all = df.reindex(columns = out_col)
 
 print("X:", X_all)
 print("Y:", Y_all)
@@ -59,6 +62,7 @@ print("shape of X_all:", X_all.shape)
 print("shape of Y_all:", Y_all.shape)
 
 
+#%%
 # Train-test split
 X_train_raw, X_test_raw, Y_train_raw, Y_test_raw = train_test_split(
     X_all, Y_all, test_size=0.2, random_state=0)
@@ -70,6 +74,7 @@ print("shape of X_test_raw:", X_test_raw.shape)
 print("shape of Y_test_raw:", Y_test_raw.shape)
 
 
+#%%
 # Creat a new folder with DATE under TrainData and save all parquets there
 
 # define the name of dir to be created 
@@ -108,14 +113,11 @@ Y_test = pd.DataFrame(Y_test, columns = Y_test_raw.columns)
 
 #%%
 # Pickle scaler X_scaler Y_scaler
-X_scaler_file = 'X_scaler.sav'
-pickle.dump(X_scaler_file, open(X_scaler_file, 'wb'))
-Y_scaler_file = 'Y_scaler.sav'
-pickle.dump(Y_scaler_file, open(Y_scaler_file, 'wb'))
+dump(X_scaler, open('X_scaler.pkl', 'wb'))
+dump(Y_scaler, open('Y_scaler.pkl', 'wb'))
 # For loading back
-# X_scalerfile = 'X_scaler.sav'
-# X_scaler = pickle.load(open(X_scalerfile, 'rb'))
-# test_scaled_set = scaler.transform(test_set)
+# X_scaler = load(open('X_scaler.pkl', 'rb'))
+# Y_scaler = load(open('Y_scaler.pkl', 'rb'))
 
 
 #%%

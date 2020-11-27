@@ -11,7 +11,7 @@ import glob
 import os
 import time
 from datetime import datetime
-#%%
+import pickle
 
 # new hallo hugo
 #%%
@@ -63,7 +63,24 @@ def get_df_parquet(folder):
     df = pd.concat((get_df(gdx_file) for gdx_file in all_files))
    
     df.index = [f'draw_{i}' for i in range(df.shape[0])]
-    
+
+    # replace "2020" with "mean" after month because 
+    df.columns = df.columns.str.replace('JAN_2020', 'JAN_mean')
+    df.columns = df.columns.str.replace('FEB_2020', 'FEB_mean')
+    df.columns = df.columns.str.replace('MAR_2020', 'MAR_mean')
+    df.columns = df.columns.str.replace('APR_2020', 'APR_mean')
+    df.columns = df.columns.str.replace('MAY_2020', 'MAY_mean')
+    df.columns = df.columns.str.replace('JUN_2020', 'JUN_mean')
+    df.columns = df.columns.str.replace('JUL_2020', 'JUL_mean')
+    df.columns = df.columns.str.replace('AUG_2020', 'AUG_mean')
+    df.columns = df.columns.str.replace('SEP_2020', 'SEP_mean')
+    df.columns = df.columns.str.replace('OCT_2020', 'OCT_mean')
+    df.columns = df.columns.str.replace('NOV_2020', 'NOV_mean')
+    df.columns = df.columns.str.replace('DEC_2020', 'DEC_mean')
+
+    # delete columns that have "2020" becaue they are same with "mean"
+    df = df[df.columns.drop(list(df.filter(regex='_2020')))]
+
     df.to_parquet("N:\\agpo\\work2\\MindStep\\SurrogateNN\\Data\\"+folder[len(folder)-9:len(folder)-1]+".parquet.gzip",  compression="gzip")
    
     # print('file saved')
@@ -122,19 +139,23 @@ for folder in all_folders:
 # Rename the indexs of total_df
 total_df.index = [f'draw_{i}' for i in range(total_df.shape[0])]
 
+
 print("shape of total_df:", total_df.shape)
+print("Total df: ", total_df)
 
 #%%
-# Rename total_df_new according to time YYMMDD
+# Rename total_df according to time YYMMDD
 Date = datetime.now().strftime("%Y%m%d") # use ("%Y%m%d-%H%M%S") for hour-minute-second
-
-print(Date)
 
 total_df.to_parquet("N:\\agpo\\work2\\MindStep\\SurrogateNN\\Data\\total_df_"+Date+".parquet.gzip",  compression="gzip")
 
 print("new total_df saved")
 
-total_df_new = pd.read_parquet("N:\\agpo\\work2\\MindStep\\SurrogateNN\\Data\\total_df_"+Date+".parquet.gzip")
+#%%
+# Get the name of columns so that we can define it later
+ColumnNames = list(total_df.columns)
+print(ColumnNames)
+with open('ColumnNames.pkl', 'wb') as f:
+    pickle.dump(ColumnNames, f)
 
-print(total_df_new)
 # %%
