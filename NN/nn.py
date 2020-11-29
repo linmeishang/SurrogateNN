@@ -18,7 +18,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, LeakyReLU
 from keras import optimizers
 from keras import backend as K
-
+from keras.losses import mean_squared_error, binary_crossentropy
 # K.tensorflow_backend._get_available_gpus()
 from scipy import stats
 from sklearn.metrics import r2_score
@@ -71,7 +71,6 @@ print('shape of Y_train:', Y_train.shape)
 print('shape of X_test:', X_test.shape)
 print('shape of Y_test:', Y_test.shape)
 
-
 # %%
 model = Sequential()
 model.add(Dense(40, input_shape=(X_train.shape[1],)))
@@ -79,9 +78,22 @@ model.add(Activation('relu'))
 model.add(Dense(Y_train.shape[1], activation='linear'))
 print(model.summary())
 
-# %%
+
+#%%
+weights = tf.ones([1,3])
+print(weights)
+#%% define a customized loss function
+# Binary loss: bunkerSilo0, potaStore500t
+# Other outputs are continuous
+# specifiy the columns -> move all binary to the end?
+def my_custom_loss(y_true, y_pred):
+    crossentropy = binary_crossentropy(y_true[0], y_pred[0])
+    weights = tf.ones([1,3])
+    mse = tf.reduce_mean(tf.square((y_true[:,1:4] - y_pred[:,1:4])*weights), axis=-1)
+    return mse + crossentropy
+
 optimizer = keras.optimizers.Adam(lr=0.001)
-model.compile(loss='mse', optimizer=optimizer)
+model.compile(loss=my_custom_loss, optimizer=optimizer)
 my_history = model.fit(X_train, Y_train, 
                        batch_size=32, epochs=50, verbose=2,
                        validation_split=0.1
