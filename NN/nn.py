@@ -71,29 +71,56 @@ print('shape of Y_train:', Y_train.shape)
 print('shape of X_test:', X_test.shape)
 print('shape of Y_test:', Y_test.shape)
 
-# %%
-model = Sequential()
-model.add(Dense(40, input_shape=(X_train.shape[1],)))
-model.add(Activation('relu'))
-model.add(Dense(Y_train.shape[1], activation='linear'))
-print(model.summary())
-
-
 #%%
-weights = tf.ones([1,3])
-print(weights)
-#%% define a customized loss function
-# Binary loss: bunkerSilo0, potaStore500t
-# Other outputs are continuous
-# specifiy the columns -> move all binary to the end?
+# number of binary outputs
+# Binary loss: bunkerSilo0, potaStore500t, the first two columns of Y
+b = 2  
+# c: number of continuous outputs
+c = Y_train.shape[1] - b
+# Weights of different outputs
+weights = tf.ones([1,c]) 
+
+
+# Define activation functions for different outputs
+def myactivation(x):
+
+    #x is the layer's output, shaped as (batch_size, units)
+    #each element in the last dimension is a neuron
+    n0 = x[:,0:b]
+    #each Neuron is shaped as (batch_size, 1)
+    n1 = x[:,b:]  
+    #apply the activation to each neuron
+    x0 = K.sigmoid(n0)
+
+    x1 = K.relu(n1)
+    #return to the original shape
+    return K.concatenate([x0,x1], axis=-1) 
+
+# Define a cosumized loss function
 def my_custom_loss(y_true, y_pred):
-    crossentropy = binary_crossentropy(y_true[0], y_pred[0])
-    weights = tf.ones([1,3])
-    mse = tf.reduce_mean(tf.square((y_true[:,1:4] - y_pred[:,1:4])*weights), axis=-1)
+    
+    crossentropy = binary_crossentropy(y_true[:,0:b], y_pred[:,0:b])
+
+    mse = tf.reduce_mean(tf.square((y_true[:,b:] - y_pred[:,b:])*weights), axis=-1)
+    
     return mse + crossentropy
 
+# Define the model
+model = Sequential()
+
+model.add(Dense(40, input_shape=(X_train.shape[1],)))
+
+model.add(Activation('relu'))
+
+model.add(Dense(Y_train.shape[1], activation=myactivation))
+
+print(model.summary())
+
+# compile the model
 optimizer = keras.optimizers.Adam(lr=0.001)
+
 model.compile(loss=my_custom_loss, optimizer=optimizer)
+
 my_history = model.fit(X_train, Y_train, 
                        batch_size=32, epochs=50, verbose=2,
                        validation_split=0.1
@@ -121,6 +148,7 @@ plt.legend(['training', 'validation'], loc='upper right')
 plt.savefig('./fig_loss.png')
 plt.show()
 
+
 #%%
 # Precit for train dataset
 yhat_train = model.predict(X_train)
@@ -142,7 +170,6 @@ print("r2 for test", r2_test)
 #%%
 # Trainsform predicted value into raw data scale
 # load X_scaler and Y_scaler
-
 X_scaler = load(open('X_scaler.pkl', 'rb'))
 Y_scaler = load(open('Y_scaler.pkl', 'rb'))
 
@@ -158,7 +185,6 @@ yhat_test_raw = pd.DataFrame(yhat_test_raw, columns = Y_test.columns)
 yhat_train_raw.to_parquet('yhat_train_raw.parquet.gzip', compression='gzip')
 yhat_test_raw.to_parquet('yhat_test_raw.parquet.gzip', compression='gzip')
 
-
 #%%
 # load true raw data 
 Y_train_raw = pd.read_parquet('Y_train_raw.parquet.gzip') 
@@ -168,6 +194,10 @@ Y_test_raw = pd.read_parquet('Y_test_raw.parquet.gzip')
 # yhat_train_raw = pd.read_parquet('yhat_train_raw.parquet.gzip') 
 # yhat_test_raw = pd.read_parquet('yhat_test_raw.parquet.gzip')
 
+#%%
+# fill nan values of Y_train_raw and Y_test_raw
+# Y_train_raw = Y_train_raw.fillna(0)
+Y_test_raw = Y_test_raw.fillna(0)
 #%%
 # Plot R2 for each targets for test dataset
 
@@ -185,17 +215,17 @@ for k, j in zip(range(0,len(Y_test_raw.columns)), Y_test_raw.columns):
 
     r2_dic[j] = r2
 
-    plt.figure(figsize=(5,5))
+    # plt.figure(figsize=(5,5))
 
-    plt.plot(y_true,y_pred,'o',color='black', markersize=2)
+    # plt.plot(y_true,y_pred,'o',color='black', markersize=2)
 
-    plt.title(str('y'+ str(k)))
+    # plt.title(str('y'+ str(k)))
 
-    plt.xlabel('y')
+    # plt.xlabel('y')
 
-    plt.ylabel('yhat')
+    # plt.ylabel('yhat')
 
-    plt.savefig(str('k = '+ str(k) + '_BaselineANN'))
+    # plt.savefig(str('k = '+ str(k) + '_BaselineANN'))
 
 
 #%%
@@ -216,4 +246,12 @@ print(dic)
 # 2>&1 | tee log_linmei.txt
 
 
-# %%
+#%%
+# # predict for a single sample
+# x_train = np.full((X_train.shape[1], ), 0.2) # fill with 0.2
+# x_train = np.array([x_train])
+# print(x_train.shape)
+
+# y_hat = model.predict(x_train)
+# print(y_hat)
+# print(y_hat.shape)
