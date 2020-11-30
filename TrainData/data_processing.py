@@ -37,14 +37,12 @@ print("Current Working Directory " , os.getcwd())
 #%%
 #Load Input and outout table
 InputOutputArable = pd.read_excel('InputOutputArable.xlsx', index_col=0)  
-#%%
-print(InputOutputArable)
-#%%
+
 # Assign these whose Input = 1 to in_col
 Input = InputOutputArable.query('Input==1')
 Output = InputOutputArable.query('Output==1')
+
 # Get name of indexs
-#%%
 in_col = Input.index.values.tolist() 
 out_col = Output.index.values.tolist()
 
@@ -136,9 +134,8 @@ for df, j in zip(my_list, range(8)):
 
 
 #%%
-# read parquet
+# # read parquet
 # Y_test_raw = pd.read_parquet('Y_test_raw.parquet.gzip') 
+# print(Y_test_raw)
 
-
-
-
+#%%
