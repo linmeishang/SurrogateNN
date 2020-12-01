@@ -21,7 +21,7 @@ from keras import backend as K
 from keras.losses import mean_squared_error, binary_crossentropy
 # K.tensorflow_backend._get_available_gpus()
 from scipy import stats
-from sklearn.metrics import r2_score
+from sklearn.metrics import r2_score, accuracy_score, BinaryAccuracy
 
 #%%
 # Find the latest TrainData
@@ -198,8 +198,10 @@ Y_test_raw = pd.read_parquet('Y_test_raw.parquet.gzip')
 # fill nan values of Y_train_raw and Y_test_raw
 # Y_train_raw = Y_train_raw.fillna(0)
 Y_test_raw = Y_test_raw.fillna(0)
+
 #%%
 # Plot R2 for each targets for test dataset
+accuracy_dic = {}
 
 r2_dic = {}
 
@@ -209,11 +211,19 @@ for k, j in zip(range(0,len(Y_test_raw.columns)), Y_test_raw.columns):
 
     y_pred = yhat_test_raw.iloc[:,k]
 
-    r2 = r2_score(y_true,y_pred)
+    if k < b: 
 
+        accuracy = K.get_value(tf.keras.metrics.binary_accuracy(y_true, y_pred, threshold=0.5))
+        
+        accuracy_dic[j] = accuracy
+
+    else:
+    
+        r2 = r2_score(y_true,y_pred)
+
+        r2_dic[j] = r2    
     # append to the dictionary of result using the column name
 
-    r2_dic[j] = r2
 
     # plt.figure(figsize=(5,5))
 
@@ -230,9 +240,9 @@ for k, j in zip(range(0,len(Y_test_raw.columns)), Y_test_raw.columns):
 
 #%%
 # store indicators into a list
-result_dic = {"train score":train_score, "test score": test_score, "r2_train": r2_train, "r2_test": r2_test} 
+train_dic = {"train score":train_score, "test score": test_score, "r2_train": r2_train, "r2_test": r2_test} 
 
-result_dic.update(r2_dic)
+result_dic = {**train_dic, **accuracy_dic, **r2_dic}
 
 #%%
 # save results
