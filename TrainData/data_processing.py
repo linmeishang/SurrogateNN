@@ -58,7 +58,24 @@ print("X:", X_all)
 print("Y:", Y_all)
 print("shape of X_all:", X_all.shape)
 print("shape of Y_all:", Y_all.shape)
+#%%
+num_nans = X_all.size - X_all.count().sum()
+print(num_nans)
+print(X_all.size)
 
+#%%
+# fillna with 0
+# Issue: some empty cells are actually, some not. 
+# Solution: Inputs replace with mean, output with 0 -> domain knowledge
+# Not fill all nans and see if it works
+X_all= X_all.fillna(X_all.mean(axis=0))
+
+Y_all = Y_all.fillna(0)
+
+print('X_all:', X_all)
+print('Y_all:', Y_all)
+print('shape of X_all:', X_all.shape)
+print('shape of Y_all:', Y_all.shape)
 
 #%%
 # Train-test split

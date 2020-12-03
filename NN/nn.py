@@ -21,11 +21,10 @@ from keras import backend as K
 from keras.losses import mean_squared_error, binary_crossentropy
 # K.tensorflow_backend._get_available_gpus()
 from scipy import stats
-from sklearn.metrics import r2_score, accuracy_score, BinaryAccuracy
+from sklearn.metrics import r2_score
 
 #%%
-# Find the latest TrainData
-
+# find the latest TrainData
 path = r'N:\agpo\work2\MindStep\SurrogateNN\TrainData'
 
 all_folders = glob.glob(os.path.join(path + '/*/'))
@@ -33,7 +32,6 @@ all_folders = glob.glob(os.path.join(path + '/*/'))
 # find the latest Train Data
 TrainData = max(all_folders, key=os.path.getctime)
 
-#%%
 # set TrainData as work dir
 path = TrainData
 
@@ -45,31 +43,13 @@ print("Current Working Directory " , os.getcwd())
 # load data and read parquet
 X_train = pd.read_parquet('X_train.parquet.gzip') 
 Y_train = pd.read_parquet('Y_train.parquet.gzip') 
-
 X_test = pd.read_parquet('X_test.parquet.gzip') 
 Y_test = pd.read_parquet('Y_test.parquet.gzip')
 
-#%%
-num_nans = Y_train.size - Y_train.count().sum()
-print(num_nans)
-print(Y_train.size)
-#%%
-# fillna with 0
-# Issue: some empty cells are actually, some not. 
-# Solution: Inputs replace with mean, output with 0 -> domain knowledge
-X_train= X_train.fillna(X_train.mean(axis=0))
-Y_train= Y_train.fillna(0)
-
-X_test = X_test.fillna(X_test.mean(axis=0))
-Y_test = Y_test.fillna(0)
-
-#%%
 print('X_train:', X_train)
 print('Y_train:', Y_train)
 print('shape of X_train:', X_train.shape)
 print('shape of Y_train:', Y_train.shape)
-print('shape of X_test:', X_test.shape)
-print('shape of Y_test:', Y_test.shape)
 
 #%%
 # number of binary outputs
@@ -79,7 +59,6 @@ b = 2
 c = Y_train.shape[1] - b
 # Weights of different outputs
 weights = tf.ones([1,c]) 
-
 
 # Define activation functions for different outputs
 def myactivation(x):
@@ -108,7 +87,7 @@ def my_custom_loss(y_true, y_pred):
 # Define the model
 model = Sequential()
 
-model.add(Dense(40, input_shape=(X_train.shape[1],)))
+model.add(Dense(300, input_shape=(X_train.shape[1],)))
 
 model.add(Activation('relu'))
 
@@ -126,11 +105,13 @@ my_history = model.fit(X_train, Y_train,
                        validation_split=0.1
                        )
 
-train_score = model.evaluate(X_train, Y_train, batch_size=32, verbose=0)
-print("train_score = ", train_score)
+# Scores shall be defined using binary loss and mse. 
+# However, we dont keep them since it is not give us any useful information
 
-test_score = model.evaluate(X_test, Y_test, batch_size=32, verbose=0)
-print("test_score = ", test_score)
+# train_score = model.evaluate(X_train, Y_train, batch_size=32, verbose=0)
+# print("train_score = ", train_score)
+# test_score = model.evaluate(X_test, Y_test, batch_size=32, verbose=0)
+# print("test_score = ", test_score)
 
 # save the model
 model.save("model") 
@@ -152,19 +133,44 @@ plt.show()
 #%%
 # Precit for train dataset
 yhat_train = model.predict(X_train)
-print(yhat_train.shape)
-
+yhat_train = pd.DataFrame(yhat_train, columns = Y_train.columns)
+print('yhat_train:', yhat_train)
+print('shape of yhat_test:', yhat_train.shape)
+#%%
 # Predict for test dataset
 yhat_test = model.predict(X_test)
-print(yhat_test.shape)
+yhat_test = pd.DataFrame(yhat_test, columns = Y_test.columns)
+print('yhat_test:', yhat_test)
+print('shape of yhat_test:',yhat_test.shape)
 
-# r2 or train dataset
-r2_train = r2_score(Y_train, yhat_train)
-print("r2 for train", r2_train)
+#%%
+# binary accuracy and r2 of train dataset without scaling back to raw values
+accuracy_train = 0
+for i in range(b): 
+    y_true = Y_train.iloc[:,i]
+    y_pred = yhat_train.iloc[:,i]
+    accuracy = K.get_value(tf.keras.metrics.binary_accuracy(y_true, y_pred, threshold=0.5))
+    accuracy_train += accuracy
+mean_accuracy_train = accuracy_train/b
+print("mean accuracy of training set:", mean_accuracy_train)
 
-# r2 for test dataset
+r2_train = r2_score(Y_train.iloc[:,b:], yhat_train.iloc[:,b:])
+print("r2 of training set", r2_train)
+
+
+#%%
+# binary accuracy and r2 for test dataset
+accuracy_train = 0
+for i in range(b): 
+    y_true = Y_test.iloc[:,i]
+    y_pred = yhat_test.iloc[:,i]
+    accuracy = K.get_value(tf.keras.metrics.binary_accuracy(y_true, y_pred, threshold=0.5))
+    accuracy_train += accuracy
+mean_accuracy_test = accuracy_train/b
+print("mean accuracy of test set:", mean_accuracy_test)
+
 r2_test = r2_score(Y_test, yhat_test)
-print("r2 for test", r2_test)
+print("r2 of test set", r2_test)
 
 
 #%%
@@ -194,10 +200,6 @@ Y_test_raw = pd.read_parquet('Y_test_raw.parquet.gzip')
 # yhat_train_raw = pd.read_parquet('yhat_train_raw.parquet.gzip') 
 # yhat_test_raw = pd.read_parquet('yhat_test_raw.parquet.gzip')
 
-#%%
-# fill nan values of Y_train_raw and Y_test_raw
-# Y_train_raw = Y_train_raw.fillna(0)
-Y_test_raw = Y_test_raw.fillna(0)
 
 #%%
 # Plot R2 for each targets for test dataset
@@ -240,7 +242,7 @@ for k, j in zip(range(0,len(Y_test_raw.columns)), Y_test_raw.columns):
 
 #%%
 # store indicators into a list
-train_dic = {"train score":train_score, "test score": test_score, "r2_train": r2_train, "r2_test": r2_test} 
+train_dic = {"mean_accuracy_train": mean_accuracy_train, "r2_train": r2_train, "mean_accuracy_test": mean_accuracy_test, "r2_test": r2_test} 
 
 result_dic = {**train_dic, **accuracy_dic, **r2_dic}
 
