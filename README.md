@@ -1,4 +1,13 @@
 # SurrogateNN
+
+Contact information: Linmei Shang, Institute for Food and Resource Economics (ILR), University of Bonn, Nußallee 21, 53115 Bonn, Germany (E-mail address: linmei.shang@ilr.uni-bonn.de)
+
+Program language: python, GAMS (General AlgebraicModeling System)
+
+Data format: gdx file
+
+Dats size: 8.32 GB
+
 This repository contains 5 folders. Their functions are decribed below.
 ## 1. DataCollection
 This folder contains the raw data generated from the farm-level model FarmDyn (https://github.com/FarmDyn). These data was generated at different times and stored each time in a seperated folder. In each folder, there are many gdx files. Each gdx file is a farm draw. 
