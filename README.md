@@ -30,15 +30,15 @@ The trained models (best_model.h5) and their predictions are stored in their own
 
 ## 4. SampleSize
 This folder seperates the original training set into different sample sizes, trains models using different sample sizes, and evaluates the performance of all models using our evaluation metrics (EM). Here are the desriptions of the main files in this folder:
-1) "1_seperate_data.py": It seperates the data into samples sizes of {1000, 5000, 10000, 50000, 100000, 150000}, and it normalizes the training set and test set. Data of each samples size is stored in a "Sample(size)" (e.g. Sample1000) folder.
+"1_seperate_data.py": It seperates the data into samples sizes of {1000, 5000, 10000, 50000, 100000, 150000}, and it normalizes the training set and test set. Data of each samples size is stored in a "Sample(size)" (e.g. Sample1000) folder.
 
-2) "2_train_nn.py": It loads the pre-defined the hyperparameters from the 12 best models (e.g "mlp_arc.py"), trains new models giving random seeds, and stores the trained model in each "Sample(size)" folder. 
+"2_train_nn.py": It loads the pre-defined the hyperparameters from the 12 best models (e.g "mlp_arc.py"), trains new models giving random seeds, and stores the trained model in each "Sample(size)" folder. 
 
-3) "3_predict.py": It loads the trained models from each "Sample(size)" folder, creates a model folder for each model, and saves the predictions in the model folder. 
+"3_predict.py": It loads the trained models from each "Sample(size)" folder, creates a model folder for each model, and saves the predictions in the model folder. 
 
-4) "4_EM_SampleSize.py": It loads the "Evaluation_Metrics.py", evaluates the performances of all models, and stores the results of each "Sample(size)" folder in a excel file, named "Evaluation_total_df_Sample(size).xlsx".
+"4_EM_SampleSize.py": It loads the "Evaluation_Metrics.py", evaluates the performances of all models, and stores the results of each "Sample(size)" folder in a excel file, named "Evaluation_total_df_Sample(size).xlsx".
 
-5) "5_collect_EM.py": It calculates the avargae performance of 5 random models of each architecture and stores the result in a excel file, name "results.xlsx".
+"5_collect_EM.py": It calculates the avargae performance of 5 random models of each architecture and stores the result in a excel file, name "results.xlsx".
 
 ## 5. Visualization
 This folder contains the code of visualizing the results of inference time and results from the SampleSize experiment of the last step. 
