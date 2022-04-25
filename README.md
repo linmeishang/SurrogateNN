@@ -46,10 +46,10 @@ The raw and normalized datasets can be downloaded with the given link.
 
 ## 3. NN
 This folder contains the python files of training different architetures of NNs, including:
-1) MLP
-2) ResNets (18, 34, 50)
-3) LSTM
-4) BiLSTM
+1) Multilayer Perceptron (MLP)
+2) Residual Net (ResNets)
+3) Long Short-Term Memory (LSTM)
+4) Bidirectional Long Short-term Memory (BiLSTM)
 
 The trained models (best_model.h5) and their predictions are stored in their own model folders under the "DataPreparation_(date)" folder. We only reserved the 4 best models in the "DataPreparation_(date)" folder for minimizing the storage use. The trained models can be reloaded and used for predictions directly. 
 
