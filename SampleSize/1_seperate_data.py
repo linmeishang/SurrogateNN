@@ -21,7 +21,7 @@ print('shape of Y_test_raw:', Y_test_raw.shape)
 for i in [1000, 5000, 10000, 50000, 100000, 150000]: 
 
     # create a folder 
-    sample_path = r"N:\agpo\work2\MindStep\SurrogateNN\SampleSize\Sample"+ str(i)
+    sample_path = r"D:\~your work path~\SurrogateNN\SampleSize\Sample"+ str(i)
     os.makedirs(sample_path)
     os.chdir(sample_path)
     print("Current Working Directory " , os.getcwd())
