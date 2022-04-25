@@ -38,7 +38,7 @@ from sklearn.metrics import r2_score
 #%%
 
 # find all DataPreparation folders
-path = r'N:\agpo\work2\MindStep\SurrogateNN\DataPreparation'
+path = r'D:\~your work path~\SurrogateNN\DataPreparation'
 all_folders = glob.glob(os.path.join(path + '/*/'))
 
 # find the latest Train Data
@@ -396,4 +396,6 @@ df = pd.DataFrame(data=result_dic, index=[model_name])
 df = (df.T)
 print (df)
 df.to_excel(model_name+".xlsx")
+
+
 
