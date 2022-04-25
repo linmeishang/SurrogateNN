@@ -10,7 +10,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.ticker as mtick
 #%%
 # load test and train data and predictions for later calculation
-path = r'N:\agpo\work2\MindStep\SurrogateNN\SampleSize'
+path = r'D:\~your work path~\SurrogateNN\SampleSize'
 os.chdir(path)
 print("Current Working Directory " , os.getcwd())
 models = ["MLP", "ResNet", "LSTM", "BiLSTM", ]
