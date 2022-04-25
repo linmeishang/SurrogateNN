@@ -1,16 +1,30 @@
 # SurrogateNN
 
+This github repository shares the data and codes used for developing and evaluating Neural Network surrogates for a detailed farm model FarmDyn (https://github.com/FarmDyn). 
+
+Hardware required: CPU, GPU
+
+Software required: python, GAMS (General AlgebraicModeling System)
+
+Program language: python
+
+Data format: gdx file, pandas dataframe, parquet file
+
+Data size: 346 MB
+
+Size of trained models: 352 KB - 865 MB
+
+Format of trained models: .h5 (keras)
+
+First year available: 2022
+
 Contact information: Linmei Shang, Institute for Food and Resource Economics (ILR), University of Bonn, Nußallee 21, 53115 Bonn, Germany (E-mail address: linmei.shang@ilr.uni-bonn.de)
 
-Program language: python, GAMS (General AlgebraicModeling System)
-
-Data format: gdx file
-
-Dats size: 8.32 GB
 
 This repository contains 5 folders. Their functions are decribed below.
+
 ## 1. DataCollection
-This folder contains the raw data generated from the farm-level model FarmDyn (https://github.com/FarmDyn). These data was generated at different times and stored each time in a seperated folder. In each folder, there are many gdx files. Each gdx file is a farm draw. 
+This folder contains the raw data generated from the farm-level model . These data was generated at different times and stored each time in a seperated folder. In each folder, there are many gdx files. Each gdx file is a farm draw. 
 
 The file "read_gdx.py" reads the gdx files in each folder and stores the data of each folder in a parquet file.
 
