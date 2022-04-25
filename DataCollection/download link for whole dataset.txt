@@ -1,2 +1,2 @@
-Due to the capacity of free storage, the whole data set for training can be downloaded under the following link: 
+Due to the capacity of free storage on github, the whole data set for training is stored under the following link: 
 https://www.dropbox.com/sh/mqumzr5rb1hcu5y/AACdwJjxb_-fI_-JeWOeE0eNa?dl=0
