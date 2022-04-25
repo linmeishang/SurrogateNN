@@ -10,7 +10,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.ticker as mtick
 #%%
 # load test and train data and predictions for later calculation
-path = r'N:\agpo\work2\MindStep\SurrogateNN\Visualisation'
+path = r'D:\~your work path~\SurrogateNN\Visualisation'
 os.chdir(path)
 print("Current Working Directory " , os.getcwd())
 
