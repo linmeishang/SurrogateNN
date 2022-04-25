@@ -32,7 +32,7 @@ from sklearn.metrics import r2_score
 
 #%%
 # find the all DataPreparation folders
-path = r'N:\agpo\work2\MindStep\SurrogateNN\DataPreparation'
+path = r'D:\~your work path~\SurrogateNN\DataPreparation'
 
 all_folders = glob.glob(os.path.join(path + '/*/'))
 
@@ -109,6 +109,7 @@ def identity_block(X, f, filters, stage, block):
     X = Activation('relu')(X)
     
     return X
+
 
 #%%
 def convolutional_block(X, f, filters, stage, block, s = 2):
