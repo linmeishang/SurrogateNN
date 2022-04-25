@@ -31,5 +31,5 @@ import random
 
 
 # Define working direcrtory
-path = r'N:\agpo\work2\MindStep\SurrogateNN\SampleSize'
+path = r'D:\~your work path~\SurrogateNN\SampleSize'
 
