@@ -4,7 +4,7 @@ This github repository shares the data and codes used for developing and evaluat
 
 Hardware required: CPU, GPU
 
-Software required: python, GAMS (General AlgebraicModeling System)
+Software required: python, GAMS (General Algebraic Modeling System)
 
 Program language: python
 
