@@ -8,7 +8,7 @@ Software required: python, GAMS (General Algebraic Modeling System)
 
 Program language: python
 
-Data format: gdx file, pandas dataframe, parquet file
+Data format: gdx file, pandas dataframe stored in parquet file
 
 Data size: 346 MB
 
