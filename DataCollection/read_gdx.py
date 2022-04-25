@@ -82,13 +82,13 @@ def get_df_parquet(folder):
     df = df[df.columns.drop(list(df.filter(regex='_2020')))]
     
 
-    df.to_parquet("N:\\agpo\\work2\\MindStep\\SurrogateNN\\DataCollection\\"+folder[len(folder)-9:len(folder)-1]+".parquet.gzip",  compression="gzip")
+    df.to_parquet("D:\\~your work path~\\SurrogateNN\\DataCollection\\"+folder[len(folder)-9:len(folder)-1]+".parquet.gzip",  compression="gzip")
    
     print('file saved')
     return df
 # %%
 # Get all folders in DataCollection
-path = r'N:\agpo\work2\MindStep\SurrogateNN\DataCollection'
+path = r'D:\~ your work path ~\SurrogateNN\DataCollection'
 
 all_folders = glob.glob(os.path.join(path + '/*/'))
 print(all_folders)
@@ -148,6 +148,7 @@ print("Total df: ", total_df)
 # Rename total_df according to time YYMMDD
 Date = datetime.now().strftime("%Y%m%d") # use ("%Y%m%d-%H%M%S") for hour-minute-second
 
-total_df.to_parquet("N:\\agpo\\work2\\MindStep\\SurrogateNN\\DataCollection\\total_df_"+Date+".parquet.gzip",  compression="gzip")
+total_df.to_parquet("D:\\~ your work path ~\\SurrogateNN\\DataCollection\\total_df_"+Date+".parquet.gzip",  compression="gzip")
+
 
 print("new total_df saved")
