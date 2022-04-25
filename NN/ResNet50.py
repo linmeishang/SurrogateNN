@@ -31,7 +31,7 @@ from sklearn.metrics import r2_score
 
 #%%
 # find the all DataPreparation folders
-path = r'N:\agpo\work2\MindStep\SurrogateNN\DataPreparation'
+path = r'D:\~your work path~\SurrogateNN\DataPreparation'
 
 all_folders = glob.glob(os.path.join(path + '/*/'))
 
