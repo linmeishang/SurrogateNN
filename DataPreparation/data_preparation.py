@@ -13,7 +13,7 @@ from pickle import dump
 import numpy as np
 #%%
 # load all total_df_... parquets from the DataCollection folder
-path = r'N:\agpo\work2\MindStep\SurrogateNN\DataCollection'
+path = r'D:\~your work path~\SurrogateNN\DataCollection'
 
 all_parquets = glob.glob(os.path.join(path+"\\total_df_20*.parquet.gzip"))
 
@@ -27,7 +27,7 @@ print("df:", df)
 
 #%%
 # Go to the DataPreparation folder
-path = r'N:\agpo\work2\MindStep\SurrogateNN\DataPreparation'
+path = r'D:\~your work path~\SurrogateNN\DataPreparation'
 os.chdir(path)
 print("Current Working Directory " , os.getcwd())
 
@@ -79,7 +79,7 @@ print("shape of Y_test_raw:", Y_test_raw.shape)
 # Creat a new folder with DATE under DataPreparation and save all parquets there
 
 # define the name of dir to be created 
-path = r"N:\agpo\work2\MindStep\SurrogateNN\DataPreparation\DataPreparation"+ datetime.now().strftime("_%Y%m%d%H%M")
+path = r"D:\~your work path~\SurrogateNN\DataPreparation\DataPreparation"+ datetime.now().strftime("_%Y%m%d%H%M")
 
 try:
     os.makedirs(path)
