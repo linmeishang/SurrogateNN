@@ -25,9 +25,6 @@ def EvaluationMetrics(Y_test, X_test_raw, Y_test_raw, yhat_test, yhat_test_raw):
     # # RMSE
     RMSE = math.sqrt(mean_squared_error(Y_test, yhat_test))
     
-    MSE = mean_squared_error(Y_test, yhat_test)
-    MAE = mean_absolute_error(Y_test, yhat_test)
-    
     # ######################################################################################################
     # Consistency of bivariate relationships: 
     # 1) N-Quant and N-leaching
@@ -167,7 +164,7 @@ def EvaluationMetrics(Y_test, X_test_raw, Y_test_raw, yhat_test, yhat_test_raw):
   
     ####################################################################################################
     # Summarize all results into the EvaluationMetrics_dic
-    EvaluationMetrics_dic = {'R2': R2, 'RMSE': RMSE, 'MSE': MSE, 'MAE': MAE, 'APE1': APE1, 'APE2': APE2, 'APE': APE, 'A1': A1, 'A2': A2} 
+    EvaluationMetrics_dic = {'R2': R2, 'RMSE': RMSE, 'APE1': APE1, 'APE2': APE2, 'APE': APE, 'A1': A1, 'A2': A2} 
     
     print(EvaluationMetrics_dic)
 
