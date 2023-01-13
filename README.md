@@ -2,7 +2,6 @@
 
 This github repository shares the data and codes used for developing and evaluating Neural Network surrogates for a detailed farm model FarmDyn (https://github.com/FarmDyn). 
 
-Hardware required: CPU, GPU
 
 Software required: python, GAMS (General Algebraic Modeling System)
 
